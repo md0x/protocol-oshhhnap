@@ -273,7 +273,7 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
         Transaction[] memory transactions,
         bytes memory explanation,
         bytes memory encodedResolution
-    ) public nonReentrant returns (bytes32 proposalHash, bytes32 assertionId) {
+    ) public nonReentrant {
         // note: Optional explanation explains the intent of the transactions to make comprehension easier.
         uint256 time = getCurrentTime();
         address proposer = msg.sender;
@@ -293,7 +293,7 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
         proposal.transactions = transactions;
 
         // Create the proposal hash.
-        proposalHash = keccak256(abi.encode(transactions));
+        bytes32 proposalHash = keccak256(abi.encode(transactions));
 
         // Add the proposal hash, explanation and rules to ancillary data.
         bytes memory claim = _constructClaim(proposalHash, explanation);
@@ -309,7 +309,7 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
         collateral.safeIncreaseAllowance(address(optimisticOracleV3), totalBond);
 
         // Assert that the proposal is correct at the Optimistic Oracle V3.
-        assertionId = optimisticOracleV3.assertTruth(
+        bytes32 assertionId = optimisticOracleV3.assertTruth(
             claim, // claim containing proposalHash, explanation and rules.
             proposer, // asserter will receive back bond if the assertion is correct.
             address(this), // callbackRecipient is set to this contract for automated proposal deletion on disputes.
