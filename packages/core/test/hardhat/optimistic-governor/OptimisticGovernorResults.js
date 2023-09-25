@@ -215,7 +215,7 @@ describe("OptimisticGovernorV3", () => {
     );
 
     let receipt = await optimisticOracleModule.methods
-      .proposeTransactionsWithResolution(transactions, explanation, calldata)
+      .proposeTransactions(transactions, explanation, calldata)
       .send({ from: proposer });
 
     const { proofs, assertionId } = (

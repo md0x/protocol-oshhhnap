@@ -265,12 +265,14 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
      * @notice Makes a new proposal for transactions to be executed with an explanation argument.
      * @param transactions the transactions being proposed.
      * @param explanation Auxillary information that can be referenced to validate the proposal.
+     * @param encodedResolution The encoded resolution data.
      * @dev Proposer must grant the contract collateral allowance at least to the bondAmount or result of getMinimumBond
      * from the Optimistic Oracle V3, whichever is greater.
      */
     function proposeTransactions(
         Transaction[] memory transactions,
-        bytes memory explanation
+        bytes memory explanation,
+        bytes memory encodedResolution
     ) public nonReentrant returns (bytes32 proposalHash, bytes32 assertionId) {
         // note: Optional explanation explains the intent of the transactions to make comprehension easier.
         uint256 time = getCurrentTime();
@@ -333,14 +335,7 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
             rules,
             time + liveness
         );
-    }
 
-    function proposeTransactionsWithResolution(
-        Transaction[] memory transactions,
-        bytes memory explanation,
-        bytes memory encodedResolution
-    ) public {
-        (bytes32 proposalHash, bytes32 assertionId) = proposeTransactions(transactions, explanation);
         VoteResolutionData memory resolution = abi.decode(encodedResolution, (VoteResolutionData));
         voteResolutions[assertionId] = VoteResolution({
             forVotes: resolution.forVotes,
@@ -350,6 +345,7 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
             proposalHash: proposalHash,
             assertionId: assertionId
         });
+
         emit VoteResolved(
             assertionId,
             proposalHash,
