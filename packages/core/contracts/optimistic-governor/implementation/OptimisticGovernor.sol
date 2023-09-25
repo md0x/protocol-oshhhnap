@@ -21,8 +21,6 @@ import "../../common/interfaces/AddressWhitelistInterface.sol";
 
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
-import "hardhat/console.sol";
-
 /**
  * @title Optimistic Governor
  * @notice A contract that allows optimistic governance of a set of transactions. The contract can be used to propose
@@ -340,10 +338,10 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
     function proposeTransactionsWithResolution(
         Transaction[] memory transactions,
         bytes memory explanation,
-        bytes memory resolution
-    ) public returns (bytes32 proposalHash, bytes32 assertionId) {
+        bytes memory encodedResolution
+    ) public {
         (bytes32 proposalHash, bytes32 assertionId) = proposeTransactions(transactions, explanation);
-        VoteResolutionData memory resolution = abi.decode(resolution, (VoteResolutionData));
+        VoteResolutionData memory resolution = abi.decode(encodedResolution, (VoteResolutionData));
         voteResolutions[assertionId] = VoteResolution({
             forVotes: resolution.forVotes,
             againstVotes: resolution.againstVotes,
@@ -371,7 +369,6 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
         bytes32[] memory merkleProof
     ) public {
         bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(msg.sender, voteFor, voteAgainst, voteAbstain))));
-        console.log("here");
         require(
             MerkleProof.verify(merkleProof, voteResolutions[assertionId].voteMerkleRoot, leaf),
             "Invalid merkle proof"
