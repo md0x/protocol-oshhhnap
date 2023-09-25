@@ -164,9 +164,9 @@ describe("OptimisticGovernorV3", () => {
       [accounts[1], "0", "2500000000000000000", "0"], // address, forVotes, againstVotes, abstainVotes
     ];
 
-    const forVotes = voteValues.reduce((acc, [_, v]) => acc.add(toBN(v)), toBN(0)).toString();
-    const againstVotes = "0";
-    const abstainVotes = "0";
+    const forVotes = voteValues.reduce((acc, [_, v, __, ___]) => acc.add(toBN(v)), toBN(0)).toString();
+    const againstVotes = voteValues.reduce((acc, [_, __, v, ___]) => acc.add(toBN(v)), toBN(0)).toString();
+    const abstainVotes = voteValues.reduce((acc, [_, ___, __, v]) => acc.add(toBN(v)), toBN(0)).toString();
 
     console.log(JSON.stringify(voteValues));
 
