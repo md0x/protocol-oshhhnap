@@ -158,7 +158,7 @@ describe("OptimisticGovernorV3", () => {
 
     // (1)
 
-    // Let's suppose that these users vote correctly these amount
+    // Let's suppose that these were the votes on Snapshot after being decrypted with drand.
     const voteValues = [
       [accounts[0], "5000000000000000000", "0", "0"], // address, forVotes, againstVotes, abstainVotes
       [accounts[1], "0", "2500000000000000000", "0"], // address, forVotes, againstVotes, abstainVotes
