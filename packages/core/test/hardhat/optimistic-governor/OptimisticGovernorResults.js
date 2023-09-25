@@ -188,7 +188,7 @@ describe("OptimisticGovernorV3", () => {
         proof,
       };
     }
-    const data = JSON.stringify(proofData);
+    const votesAndProofs = JSON.stringify(proofData);
 
     const calldata = web3.eth.abi.encodeParameters(
       [
@@ -199,7 +199,7 @@ describe("OptimisticGovernorV3", () => {
             { name: "againstVotes", type: "uint256" },
             { name: "abstainVotes", type: "uint256" },
             { name: "voteMerkleRoot", type: "bytes32" },
-            { name: "data", type: "string" },
+            { name: "votesAndProofs", type: "string" },
           ],
         },
       ],
@@ -209,7 +209,7 @@ describe("OptimisticGovernorV3", () => {
           againstVotes,
           abstainVotes,
           voteMerkleRoot: tree.root,
-          data,
+          votesAndProofs,
         },
       ]
     );
@@ -218,11 +218,11 @@ describe("OptimisticGovernorV3", () => {
       .proposeTransactions(transactions, explanation, calldata)
       .send({ from: proposer });
 
-    const { proofs, assertionId } = (
+    const { votesAndProofs: proofs, assertionId } = (
       await findEvent(receipt, optimisticOracleModule, "VoteResolved")
     ).match.returnValues;
 
-    console.log(JSON.stringify(proofs));
+    console.log(JSON.stringify(votesAndProofs));
 
     let receipt2 = await optimisticOracleModule.methods
       .congratulate(

@@ -35,7 +35,7 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
         uint256 againstVotes;
         uint256 abstainVotes;
         bytes32 voteMerkleRoot;
-        string data;
+        string votesAndProofs;
     }
 
     struct VoteResolution {
@@ -77,7 +77,7 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
         uint256 againstVotes,
         uint256 abstainVotes,
         bytes32 voteMerkleRoot,
-        string proofs
+        string votesAndProofs
     );
 
     event Congratulated(
@@ -353,7 +353,7 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
             resolution.againstVotes,
             resolution.abstainVotes,
             resolution.voteMerkleRoot,
-            resolution.data
+            resolution.votesAndProofs
         );
     }
 
