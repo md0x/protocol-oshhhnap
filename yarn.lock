@@ -3480,11 +3480,6 @@
   resolved "https://registry.yarnpkg.com/@multiformats/base-x/-/base-x-4.0.1.tgz#95ff0fa58711789d53aefb2590a8b7a4e715d121"
   integrity sha512-eMk0b9ReBbV23xXU693TAIrLyeO5iTgBZGSJfpqriG8UkYvr/hC9u9pyMlAakDNHWmbhMZCDs6KQO0jzKD8OTw==
 
-"@napi-rs/triples@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@napi-rs/triples/-/triples-1.1.0.tgz#88c35b72e79a20b79bb4c9b3e2817241a1c9f4f9"
-  integrity sha512-XQr74QaLeMiqhStEhLn1im9EOMnkypp7MZOwQhGzqp2Weu5eQJbpPxWxixxlYRKWPOmJjsk6qYfYH9kq43yc2w==
-
 "@noble/hashes@1.2.0", "@noble/hashes@~1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.2.0.tgz#a3150eeb09cc7ab207ebf6d7b9ad311a9bdbed12"
@@ -3499,53 +3494,6 @@
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-1.7.1.tgz#b251c70f824ce3ca7f8dc3df08d58f005cc0507c"
   integrity sha512-hOUk6AyBFmqVrv7k5WAw/LpszxVbj9gGN4JRkIX52fdFAj1UA61KXmZDvqVEm+pOyec3+fIeZB02LYa/pWOArw==
-
-"@node-rs/crc32-android-arm64@^1.0.0":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@node-rs/crc32-android-arm64/-/crc32-android-arm64-1.7.2.tgz#40bbbb54289fe47abf67558d22d87abace78d7d3"
-  integrity sha512-SMEd6cN+034LTv9kFmCGMZjBNTf39xXIcgqq05JM9A55ywUvXdoXnFOttrQ9x/iZgqANNU6Ms5uZCAJbNA2dZA==
-
-"@node-rs/crc32-darwin-arm64@^1.0.0":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@node-rs/crc32-darwin-arm64/-/crc32-darwin-arm64-1.7.2.tgz#3fa11b1176a1d463accf95deb046896487e0d374"
-  integrity sha512-sPJisK5pyZ+iBs9KuGsvu0Z+Qshw4GvOgaHjPktQ+suz0p00Yts3zl5D6PpGaaW4EAKTo8zCUIlVEArV0vglvw==
-
-"@node-rs/crc32-darwin-x64@^1.0.0":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@node-rs/crc32-darwin-x64/-/crc32-darwin-x64-1.7.2.tgz#bf5b1b3e471da1c84e5af19c8a4f667cb0e31540"
-  integrity sha512-+/lgHYJaZdXU+7fhGYTnXvGkeSqZE3UwPyKAUO5YSL0nIpFHMybZMnvqjcoxrfx0QfMFOwVEbd7vfVh+1GpwhA==
-
-"@node-rs/crc32-linux-arm-gnueabihf@^1.0.0":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@node-rs/crc32-linux-arm-gnueabihf/-/crc32-linux-arm-gnueabihf-1.7.2.tgz#b26c60564a85cd92de5961050aaa9b5e62dda97c"
-  integrity sha512-hTY83MQML8WrMnD3dmzjrcCn0Sqgw0w2wRc1Ji2dCaE0fDqra47W5KBQXx4hKZYFwNr5KreTqdvD3Ejf/mKzEA==
-
-"@node-rs/crc32-linux-arm64-gnu@^1.0.0":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@node-rs/crc32-linux-arm64-gnu/-/crc32-linux-arm64-gnu-1.7.2.tgz#076e43f3592496a1cbea69e0e8fb3031d7711569"
-  integrity sha512-4p6DZ9YT+CBSi+72OclzI5hBin15brqrbLLHFePPl4AhAazg6+ReTv3C4DnyJqyL0ZHZamiA9zDtOlvHo0nk0Q==
-
-"@node-rs/crc32-linux-x64-gnu@^1.0.0":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@node-rs/crc32-linux-x64-gnu/-/crc32-linux-x64-gnu-1.7.2.tgz#f17f2d570823ae9195296960af2045d9f76108eb"
-  integrity sha512-rzoqXqPLjx5sx8jzEg/xRAdBDkjnaM+D3Nrm9xJckHWzeeUB0FC0E4QGrdtqFo15lQ1GDVV/q6n93mLSK5vCkQ==
-
-"@node-rs/crc32-linux-x64-musl@^1.0.0":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@node-rs/crc32-linux-x64-musl/-/crc32-linux-x64-musl-1.7.2.tgz#3a3406486db63ffcdb6e4c08681d91dba8585640"
-  integrity sha512-Hwim1Wc8LoNqG53qX8Dm3VY32ClbKWpdi9pkbJU4/aG5RFUfd3k/x9WSeATlBx+K36Tc1XsrWvbsf1eWwryEYA==
-
-"@node-rs/crc32-win32-x64-msvc@^1.0.0":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@node-rs/crc32-win32-x64-msvc/-/crc32-win32-x64-msvc-1.7.2.tgz#7e509ea3969a0190324beb8c829f7845c547e4cf"
-  integrity sha512-DnluAFM6X8qsYVI1VaFQtI6ukigIQ2P4eVcEuNQ3d1lF5fs0RYAKY7Ajqrdk298TSGZ2joMiqfJksTHBsQoxtA==
-
-"@node-rs/helper@^1.0.0":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@node-rs/helper/-/helper-1.3.3.tgz#2b1953846ddba31bfb7ecf4ba57e7b1359fcdedc"
-  integrity sha512-p4OdfQObGN9YFy5WZaGwlPYICQSe7xZYyXB0sxREmvj1HzGKp5bPg2PlfgfMZEfnjIA882B9ZrnagYzZihIwjA==
-  dependencies:
-    "@napi-rs/triples" "^1.1.0"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -4139,6 +4087,14 @@
   version "4.8.2"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.8.2.tgz#d815ade0027b50beb9bcca67143c6bcc3e3923d6"
   integrity sha512-kEUOgPQszC0fSYWpbh2kT94ltOJwj1qfT2DWo+zVttmGmf97JZ99LspePNaeeaLhCImaHVeBbjaQFZQn7+Zc5g==
+
+"@openzeppelin/merkle-tree@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/merkle-tree/-/merkle-tree-1.0.5.tgz#4836d377777a7e39f31674f06ec3d6909def7913"
+  integrity sha512-JkwG2ysdHeIphrScNxYagPy6jZeNONgDRyqU6lbFgE8HKCZFSkcP8r6AjZs+3HZk4uRNV0kNBBzuWhKQ3YV7Kw==
+  dependencies:
+    "@ethersproject/abi" "^5.7.0"
+    ethereum-cryptography "^1.1.2"
 
 "@pagerduty/pdjs@^2.2.4":
   version "2.2.4"
@@ -11175,7 +11131,7 @@ ethereum-cryptography@0.1.3, ethereum-cryptography@^0.1.3:
     secp256k1 "^4.0.1"
     setimmediate "^1.0.5"
 
-ethereum-cryptography@^1.0.3:
+ethereum-cryptography@^1.0.3, ethereum-cryptography@^1.1.2:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/ethereum-cryptography/-/ethereum-cryptography-1.2.0.tgz#5ccfa183e85fdaf9f9b299a79430c044268c9b3a"
   integrity sha512-6yFQC9b5ug6/17CQpCyE3k9eKBMdhyVjzUy1WkiuY/E4vj/SXDBbCw8QEIaXqf0Mf2SnY6RmpDcwlUmBSS0EJw==
@@ -22316,22 +22272,6 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==
-
-"sse4_crc32@npm:@node-rs/crc32@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@node-rs/crc32/-/crc32-1.0.0.tgz#b5038542a754f85d340b7c6c316853ee8c76a079"
-  integrity sha512-0Y5VP0f4vFuEujP3G2j+wd5bdTJg/pzj7ILq0K7PyUeGuI0iGQwg1iYSGIjQg0OU+xp987P7XCQaMpNt0+DcDg==
-  dependencies:
-    "@node-rs/helper" "^1.0.0"
-  optionalDependencies:
-    "@node-rs/crc32-android-arm64" "^1.0.0"
-    "@node-rs/crc32-darwin-arm64" "^1.0.0"
-    "@node-rs/crc32-darwin-x64" "^1.0.0"
-    "@node-rs/crc32-linux-arm-gnueabihf" "^1.0.0"
-    "@node-rs/crc32-linux-arm64-gnu" "^1.0.0"
-    "@node-rs/crc32-linux-x64-gnu" "^1.0.0"
-    "@node-rs/crc32-linux-x64-musl" "^1.0.0"
-    "@node-rs/crc32-win32-x64-msvc" "^1.0.0"
 
 sshpk@^1.7.0:
   version "1.17.0"

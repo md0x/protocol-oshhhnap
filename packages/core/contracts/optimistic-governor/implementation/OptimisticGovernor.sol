@@ -19,6 +19,8 @@ import "../../optimistic-oracle-v3/interfaces/OptimisticOracleV3CallbackRecipien
 import "../../common/implementation/Lockable.sol";
 import "../../common/interfaces/AddressWhitelistInterface.sol";
 
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+
 /**
  * @title Optimistic Governor
  * @notice A contract that allows optimistic governance of a set of transactions. The contract can be used to propose
@@ -27,6 +29,23 @@ import "../../common/interfaces/AddressWhitelistInterface.sol";
  */
 contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Module, Lockable {
     using SafeERC20 for IERC20;
+
+    struct VoteResolutionData {
+        uint256 forVotes;
+        uint256 againstVotes;
+        uint256 abstainVotes;
+        bytes32 voteMerkleRoot;
+        string votesAndProofs;
+    }
+
+    struct VoteResolution {
+        uint256 forVotes;
+        uint256 againstVotes;
+        uint256 abstainVotes;
+        bytes32 voteMerkleRoot;
+        bytes32 proposalHash;
+        bytes32 assertionId;
+    }
 
     event OptimisticGovernorDeployed(address indexed owner, address indexed avatar, address target);
 
@@ -50,6 +69,24 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
     event ProposalExecuted(bytes32 indexed proposalHash, bytes32 indexed assertionId);
 
     event ProposalDeleted(bytes32 indexed proposalHash, bytes32 indexed assertionId);
+
+    event VoteResolved(
+        bytes32 indexed assertionId,
+        bytes32 indexed proposalHash,
+        uint256 forVotes,
+        uint256 againstVotes,
+        uint256 abstainVotes,
+        bytes32 voteMerkleRoot,
+        string votesAndProofs
+    );
+
+    event Congratulated(
+        address indexed user,
+        bytes32 indexed assertionId,
+        uint256 voteFor,
+        uint256 voteAgainst,
+        uint256 voteAbstain
+    );
 
     event SetCollateralAndBond(IERC20 indexed collateral, uint256 indexed bondAmount);
 
@@ -94,6 +131,7 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
 
     mapping(bytes32 => bytes32) public assertionIds; // Maps proposal hashes to assertionIds.
     mapping(bytes32 => bytes32) public proposalHashes; // Maps assertionIds to proposal hashes.
+    mapping(bytes32 => VoteResolution) public voteResolutions; // Maps assertionIds to vote resolutions.
 
     /**
      * @notice Construct Optimistic Governor module.
@@ -227,10 +265,15 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
      * @notice Makes a new proposal for transactions to be executed with an explanation argument.
      * @param transactions the transactions being proposed.
      * @param explanation Auxillary information that can be referenced to validate the proposal.
+     * @param encodedResolution The encoded resolution data.
      * @dev Proposer must grant the contract collateral allowance at least to the bondAmount or result of getMinimumBond
      * from the Optimistic Oracle V3, whichever is greater.
      */
-    function proposeTransactions(Transaction[] memory transactions, bytes memory explanation) external nonReentrant {
+    function proposeTransactions(
+        Transaction[] memory transactions,
+        bytes memory explanation,
+        bytes memory encodedResolution
+    ) public nonReentrant {
         // note: Optional explanation explains the intent of the transactions to make comprehension easier.
         uint256 time = getCurrentTime();
         address proposer = msg.sender;
@@ -266,18 +309,17 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
         collateral.safeIncreaseAllowance(address(optimisticOracleV3), totalBond);
 
         // Assert that the proposal is correct at the Optimistic Oracle V3.
-        bytes32 assertionId =
-            optimisticOracleV3.assertTruth(
-                claim, // claim containing proposalHash, explanation and rules.
-                proposer, // asserter will receive back bond if the assertion is correct.
-                address(this), // callbackRecipient is set to this contract for automated proposal deletion on disputes.
-                escalationManager, // escalationManager (if set) used for whitelisting proposers / disputers.
-                liveness, // liveness in seconds.
-                collateral, // currency in which the bond is denominated.
-                totalBond, // bond amount used to assert proposal.
-                identifier, // identifier used to determine if the claim is correct at DVM.
-                bytes32(0) // domainId is not set.
-            );
+        bytes32 assertionId = optimisticOracleV3.assertTruth(
+            claim, // claim containing proposalHash, explanation and rules.
+            proposer, // asserter will receive back bond if the assertion is correct.
+            address(this), // callbackRecipient is set to this contract for automated proposal deletion on disputes.
+            escalationManager, // escalationManager (if set) used for whitelisting proposers / disputers.
+            liveness, // liveness in seconds.
+            collateral, // currency in which the bond is denominated.
+            totalBond, // bond amount used to assert proposal.
+            identifier, // identifier used to determine if the claim is correct at DVM.
+            bytes32(0) // domainId is not set.
+        );
 
         // Maps the proposal hash to the returned assertionId and vice versa.
         assertionIds[proposalHash] = assertionId;
@@ -293,6 +335,42 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
             rules,
             time + liveness
         );
+
+        VoteResolutionData memory resolution = abi.decode(encodedResolution, (VoteResolutionData));
+        voteResolutions[assertionId] = VoteResolution({
+            forVotes: resolution.forVotes,
+            againstVotes: resolution.againstVotes,
+            abstainVotes: resolution.abstainVotes,
+            voteMerkleRoot: resolution.voteMerkleRoot,
+            proposalHash: proposalHash,
+            assertionId: assertionId
+        });
+
+        emit VoteResolved(
+            assertionId,
+            proposalHash,
+            resolution.forVotes,
+            resolution.againstVotes,
+            resolution.abstainVotes,
+            resolution.voteMerkleRoot,
+            resolution.votesAndProofs
+        );
+    }
+
+    function congratulate(
+        bytes32 assertionId,
+        uint256 voteFor,
+        uint256 voteAgainst,
+        uint256 voteAbstain,
+        bytes32[] memory merkleProof
+    ) public {
+        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(msg.sender, voteFor, voteAgainst, voteAbstain))));
+        require(
+            MerkleProof.verify(merkleProof, voteResolutions[assertionId].voteMerkleRoot, leaf),
+            "Invalid merkle proof"
+        );
+
+        emit Congratulated(msg.sender, assertionId, voteFor, voteAgainst, voteAbstain);
     }
 
     /**
