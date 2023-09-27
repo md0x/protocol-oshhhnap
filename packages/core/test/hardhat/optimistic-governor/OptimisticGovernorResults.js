@@ -218,27 +218,6 @@ describe("OptimisticGovernorV3", () => {
       .proposeTransactions(transactions, explanation, calldata)
       .send({ from: proposer });
 
-    const { votesAndProofs: proofs, assertionId } = (
-      await findEvent(receipt, optimisticOracleModule, "VoteResolved")
-    ).match.returnValues;
-
-    console.log(JSON.stringify(votesAndProofs));
-
-    let receipt2 = await optimisticOracleModule.methods
-      .congratulate(
-        assertionId,
-        JSON.parse(proofs)[accounts[0]].voteFor,
-        JSON.parse(proofs)[accounts[0]].voteAgainst,
-        JSON.parse(proofs)[accounts[0]].voteAbstain,
-        JSON.parse(proofs)[accounts[0]].proof
-      )
-      .send({ from: accounts[0] });
-
-    const { user } = (await findEvent(receipt2, optimisticOracleModule, "Congratulated")).match.returnValues;
-
-    // Check that user is congratulated
-    assert.equal(user, accounts[0]);
-
     const { proposalHash } = (
       await findEvent(receipt, optimisticOracleModule, "TransactionsProposed")
     ).match.returnValues;
@@ -282,7 +261,29 @@ describe("OptimisticGovernorV3", () => {
     const startingBalance2 = toBN(await testToken.methods.balanceOf(rando).call());
     const startingBalance3 = toBN(await testToken2.methods.balanceOf(proposer).call());
 
-    receipt = await optimisticOracleModule.methods.executeProposal(transactions).send({ from: executor });
+    receipt = await optimisticOracleModule.methods.executeProposal(transactions, calldata).send({ from: executor });
+
+    const { votesAndProofs: proofs, assertionId } = (
+      await findEvent(receipt, optimisticOracleModule, "VoteResolved")
+    ).match.returnValues;
+
+    console.log(JSON.stringify(votesAndProofs));
+
+    let receipt2 = await optimisticOracleModule.methods
+      .congratulate(
+        assertionId,
+        JSON.parse(proofs)[accounts[0]].voteFor,
+        JSON.parse(proofs)[accounts[0]].voteAgainst,
+        JSON.parse(proofs)[accounts[0]].voteAbstain,
+        JSON.parse(proofs)[accounts[0]].proof
+      )
+      .send({ from: accounts[0] });
+
+    const { user } = (await findEvent(receipt2, optimisticOracleModule, "Congratulated")).match.returnValues;
+
+    // Check that user is congratulated
+    assert.equal(user, accounts[0]);
+
     assert.equal(
       (await testToken.methods.balanceOf(proposer).call()).toString(),
       startingBalance1.add(toBN(toWei("1"))).toString()
