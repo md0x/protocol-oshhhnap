@@ -38,7 +38,7 @@ const func = async function (hre) {
     " specific Snapshot proposal that was approved or a unique identifier for a proposal in an alternative" +
     " voting system approved by DAO social consensus if Snapshot is being exploited or is otherwise unavailable.";
   const identifier = await deployments.read("OptimisticOracleV3", "defaultIdentifier");
-  const liveness = await deployments.read("OptimisticOracleV3", "defaultLiveness");
+  const liveness = 10;
 
   await deploy("OptimisticGovernor", {
     from: deployer,

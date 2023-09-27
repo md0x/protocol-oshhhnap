@@ -293,7 +293,7 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
         proposal.transactions = transactions;
 
         // Create the proposal hash.
-        bytes32 proposalHash = keccak256(abi.encode(transactions));
+        bytes32 proposalHash = keccak256(abi.encode(transactions, encodedResolution));
 
         // Add the proposal hash, explanation and rules to ancillary data.
         bytes memory claim = _constructClaim(proposalHash, explanation);
@@ -335,26 +335,6 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
             rules,
             time + liveness
         );
-
-        VoteResolutionData memory resolution = abi.decode(encodedResolution, (VoteResolutionData));
-        voteResolutions[assertionId] = VoteResolution({
-            forVotes: resolution.forVotes,
-            againstVotes: resolution.againstVotes,
-            abstainVotes: resolution.abstainVotes,
-            voteMerkleRoot: resolution.voteMerkleRoot,
-            proposalHash: proposalHash,
-            assertionId: assertionId
-        });
-
-        emit VoteResolved(
-            assertionId,
-            proposalHash,
-            resolution.forVotes,
-            resolution.againstVotes,
-            resolution.abstainVotes,
-            resolution.voteMerkleRoot,
-            resolution.votesAndProofs
-        );
     }
 
     function congratulate(
@@ -377,9 +357,9 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
      * @notice Executes an approved proposal.
      * @param transactions the transactions being executed. These must exactly match those that were proposed.
      */
-    function executeProposal(Transaction[] memory transactions) external nonReentrant {
+    function executeProposal(Transaction[] memory transactions, bytes memory encodedResolution) external nonReentrant {
         // Recreate the proposal hash from the inputs and check that it matches the stored proposal hash.
-        bytes32 proposalHash = keccak256(abi.encode(transactions));
+        bytes32 proposalHash = keccak256(abi.encode(transactions, encodedResolution));
 
         // Get the original proposal assertionId.
         bytes32 assertionId = assertionIds[proposalHash];
@@ -409,7 +389,27 @@ contract OptimisticGovernor is OptimisticOracleV3CallbackRecipientInterface, Mod
             emit TransactionExecuted(proposalHash, assertionId, i);
         }
 
+        VoteResolutionData memory resolution = abi.decode(encodedResolution, (VoteResolutionData));
+        voteResolutions[assertionId] = VoteResolution({
+            forVotes: resolution.forVotes,
+            againstVotes: resolution.againstVotes,
+            abstainVotes: resolution.abstainVotes,
+            voteMerkleRoot: resolution.voteMerkleRoot,
+            proposalHash: proposalHash,
+            assertionId: assertionId
+        });
+
         emit ProposalExecuted(proposalHash, assertionId);
+
+        emit VoteResolved(
+            assertionId,
+            proposalHash,
+            resolution.forVotes,
+            resolution.againstVotes,
+            resolution.abstainVotes,
+            resolution.voteMerkleRoot,
+            resolution.votesAndProofs
+        );
     }
 
     /**
